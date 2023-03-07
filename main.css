@@ -1,0 +1,14 @@
+.canvas_container {
+  width: 80%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+}
+
+#canvas {
+    border: 1px solid black;
+}
+
+.fff{
+    z-index: 3333;
+}
