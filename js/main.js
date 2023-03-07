@@ -1,8 +1,23 @@
+import { GameObject, Player, Enemy, Bullet } from "./classes.js";
+
 const cvs = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-const PlayerX = 463,
-  PlayerY = 238;
+const playerSprite = new Image();
+const backgroundSprite = new Image();
+const borderSprite = new Image();
+const enemySprite = new Image();
+const bulletSprite = new Image();
+bulletSprite.src = "./img/bullet.png";
+enemySprite.src = "./img/e.png";
+borderSprite.src = "./img/border.png";
+playerSprite.src = "./img/p.png";
+backgroundSprite.src = "./img/bg.png";
+bulletSprite.classList = "fff";
+
+let bullet = [];
+let shoot = false;
+let isShooting = false;
 
 const control = {
   left: false,
@@ -11,67 +26,14 @@ const control = {
   down: false,
 };
 
-class Sprite {
-  constructor({ position, velocity, sprite }) {
-    this.position = position;
-    this.velocity = velocity;
-    this.sprite = sprite;
-  }
-
-  move() {
-    ctx.clearRect(0, 0, 1026, 576);
-    if (control.down) this.position.y = this.position.y - this.velocity;
-    if (control.up) this.position.y = this.position.y + this.velocity;
-    if (control.left) this.position.x = this.position.x - this.velocity;
-    if (control.right) this.position.x = this.position.x + this.velocity;
-    ctx.drawImage(this.sprite, this.position.x, this.position.y);
-  }
-}
-
-class Enemy extends Sprite {
-  constructor({ position, velocity, sprite, radius }) {
-    super({ position, velocity, sprite });
-    this.radius = radius;
-  }
-
-  move() {
-    // if (this.position.x - PlayerX < this.radius){
-    //   this.position.x = this.position.x + this.velocity + 3
-    // }
-    if (control.down) this.position.y = this.position.y - this.velocity;
-    if (control.up) this.position.y = this.position.y + this.velocity;
-    if (control.left) this.position.x = this.position.x - this.velocity;
-    if (control.right) this.position.x = this.position.x + this.velocity;
-    ctx.drawImage(this.sprite, this.position.x, this.position.y);
-  }
-}
-
-class Bullet extends Sprite {
-  constructor({ position, velocity, sprite }) {
-    super({ position, velocity, sprite });
-  }
-
-  shoot(){
-
-  }
-}
-
-const pl = new Image();
-const backgroundSprite = new Image();
-const borderSprite = new Image();
-const enemySprite = new Image();
-enemySprite.src = "./img/e.png";
-borderSprite.src = "./img/border.png";
-pl.src = "./img/p.png";
-backgroundSprite.src = "./img/bg.png";
-
-const bg = new Sprite({
+const player = new Player({
   position: {
-    x: 0,
-    y: 0,
+    x: 100,
+    y: 100,
   },
-  sprite: backgroundSprite,
-  velocity: 5,
+  sprite: playerSprite,
+  speed: 8,
+  control: control,
 });
 
 const enemy = new Enemy({
@@ -81,9 +43,8 @@ const enemy = new Enemy({
   },
   sprite: enemySprite,
   radius: 30,
-  velocity: 5,
-})
-
+  speed: 5,
+});
 
 // const border = new Sprite({
 //   position: {
@@ -95,103 +56,90 @@ const enemy = new Enemy({
 // });
 
 window.addEventListener("keydown", (e) => {
-  console.log(e.keyCode);
   switch (e.keyCode) {
-    //map left
+    //player right
     case 68:
-      control.left = true;
-      break;
-    //map rigth
-    case 65:
       control.right = true;
       break;
-    //map up
-    case 87:
+    //player left
+    case 65:
+      control.left = true;
+      break;
+    //player up
+    case 83:
       control.up = true;
       break;
-    //map down
-    case 83:
+    //player down
+    case 87:
       control.down = true;
       break;
-    case 69: 
-
   }
+});
+
+
+cvs.addEventListener("mousedown", (e) => {
+  isShooting = true;
+  console.log(isShooting);
+
+  const bullet1 = new Bullet({
+    position: {
+      x: player.position.x,
+      y: player.position.y,
+    },
+    sprite: bulletSprite,
+    speed: 20,
+    cursorPos: {
+      x: e.x,
+      y: e.y,
+    },
+  });
+  bullet.push(bullet1);
+  setTimeout(() => {
+    bullet.shift();
+  }, 1000);
+
+  
+});
+
+cvs.addEventListener("mouseup", (e) => {
+  isShooting = false;
+  console.log(isShooting);
 });
 
 window.addEventListener("keyup", (e) => {
   switch (e.keyCode) {
-    //map left
     case 68:
-      control.left = false;
-      break;
-    //map rigth
-    case 65:
       control.right = false;
       break;
-    //map up
-    case 87:
-      control.up = false;
+    case 65:
+      control.left = false;
       break;
     case 83:
+      control.up = false;
+      break;
+    case 87:
       control.down = false;
       break;
   }
 });
-// window.addEventListener("keydown", (e) => {
-//   console.log(e.keyCode);
-//   switch (e.keyCode) {
-//     //map left
-//     case 68:
-//       control.right = true;
-//       break;
-//     //map rigth
-//     case 65:
-//       control.left = true;
-//       break;
-//     //map up
-//     case 83:
-//       control.up = true;
-//       break;
-//     //map down
-//     case 87:
-//       control.down = true;
-//       break;
-//   }
-// });
-
-// window.addEventListener("keyup", (e) => {
-//   switch (e.keyCode) {
-//     //map left
-//     case 68:
-//       control.right = false;
-//       break;
-//     //map rigth
-//     case 65:
-//       control.left = false;
-//       break;
-//     //map up
-//     case 83:
-//       control.up = false;
-//       break;
-//     case 87:
-//       control.down = false;
-//       break;
-//   }
-// });
-
-borderSprite.onload = () => {
-  ctx.drawImage(pl, PlayerX, PlayerY);
-};
 
 function animate() {
-  window.requestAnimationFrame(animate);
-  bg.move();
-  enemy.move();
-  ctx.drawImage(pl, PlayerX, PlayerY);
-  // border.render()
-  if (bg.position.x) {
+  ctx.clearRect(0, 0, 1026, 576);
 
+  ctx.drawImage(backgroundSprite, 0, 0);
+  ctx.drawImage(borderSprite, 0, 0);
+  ctx.drawImage(enemySprite, 50, 50);
+  // ctx.drawImage(borderSprite, 0, 0);
+  // border.render()
+  // if (bg.position.x) {
+  // }
+  player.move();
+  if (bullet.length != 0) {
+    bullet.forEach((el) => {
+      el.shoot();
+    });
   }
+  requestAnimationFrame(animate);
 }
 
 animate();
