@@ -17,9 +17,10 @@ bulletSprite.classList = "fff";
 
 // const audio = new Audio("../audio/PIU.mp3");
 
-
 let bullet = [];
-let isShooting = false;
+let enemys = [];
+let isShooting = false,
+  lose = false;
 
 const control = {
   left: false,
@@ -38,25 +39,21 @@ const player = new Player({
   control: control,
 });
 
-const enemy = new Enemy({
-  position: {
-    x: 50,
-    y: 30,
-  },
-  sprite: enemySprite,
-  radius: 30,
-  speed: 5,
-});
+for (let i = 0; i < 4; i++) {
+  const enemy = new Enemy({
+    position: {
+      x: Math.floor(Math.random() * 1024),
+      y: Math.floor(Math.random() * 524),
+    },
+    sprite: enemySprite,
+    radius: 30,
+    speed: 2,
+  });
 
-// const border = new Sprite({
-//   position: {
-//     x: 0,
-//     y: 0,
-//   },
-//   sprite: borderSprite,
-//   velocity: 5,
-// });
+  enemys.push(enemy);
+}
 
+// console.log(enemy.randomPos);
 window.addEventListener("keydown", (e) => {
   switch (e.keyCode) {
     //player right
@@ -96,7 +93,7 @@ const shot = (e) => {
     bullet.shift();
   }, 1000);
 
-  // if (isShooting) shot(e);
+  // if (isShooting) setTimeout(shot(e), 1000);
 };
 
 cvs.addEventListener("mousedown", (e) => {
@@ -126,6 +123,12 @@ window.addEventListener("keyup", (e) => {
     case 87:
       control.down = false;
       break;
+    case 69:
+      lose = true;
+      const audio = new Audio("../audio/lose.mp3");
+      audio.play();
+      console.log("Хуесос ты блять");
+      break;
   }
 });
 
@@ -134,17 +137,25 @@ function animate() {
 
   ctx.drawImage(backgroundSprite, 0, 0);
   ctx.drawImage(borderSprite, 0, 0);
-  ctx.drawImage(enemySprite, 50, 50);
   // ctx.drawImage(borderSprite, 0, 0);
   // border.render()
   // if (bg.position.x) {
   // }
   player.move();
+
   if (bullet.length != 0) {
     bullet.forEach((el) => {
       el.shoot();
     });
   }
+
+  if (enemys.length != 0) {
+    enemys.forEach((el) => {
+      el.randomMove();
+    });
+  }
+
+  // enemy.randomMove();
   requestAnimationFrame(animate);
 }
 

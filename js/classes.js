@@ -28,6 +28,14 @@ export class Enemy extends GameObject {
   constructor({ position, speed, sprite, radius }) {
     super({ position, speed, sprite });
     this.radius = radius;
+    this.vector = {
+      x: 0,
+      y: 0,
+    };
+    this.randomPos = {
+      x: Math.floor(Math.random() * 1024),
+      y: Math.floor(Math.random() * 524),
+    };
   }
 
   //   move() {
@@ -37,6 +45,29 @@ export class Enemy extends GameObject {
   //     if (control.right) this.position.x = this.position.x + this.speed;
   //     ctx.drawImage(this.sprite, this.position.x, this.position.y);
   //   }
+  randomMove() {
+    this.vector.x = this.randomPos.x - this.position.x;
+    this.vector.y = this.randomPos.y - this.position.y;
+
+    let length = Math.sqrt(
+      this.vector.x * this.vector.x + this.vector.y * this.vector.y
+    );
+
+    this.vector.x = this.vector.x / length;
+    this.vector.y = this.vector.y / length;
+
+    this.position.x = this.position.x + this.vector.x * this.speed;
+    this.position.y = this.position.y + this.vector.y * this.speed;
+
+    if (length >= 0 && length <= 5) {
+      this.randomPos = {
+        x: Math.floor(Math.random() * 1024),
+        y: Math.floor(Math.random() * 524),
+      };
+    }
+
+    ctx.drawImage(this.sprite, this.position.x, this.position.y);
+  }
 }
 
 export class Bullet extends GameObject {
@@ -70,7 +101,6 @@ export class Bullet extends GameObject {
     // );
     // this.position.x = this.position.x + Math.cos(angle) * this.velocity;
     // this.position.y = this.position.y + Math.sin(angle) * this.velocity;
-
     ctx.drawImage(this.sprite, this.position.x, this.position.y);
   }
 }
