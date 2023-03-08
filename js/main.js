@@ -15,8 +15,10 @@ playerSprite.src = "./img/p.png";
 backgroundSprite.src = "./img/bg.png";
 bulletSprite.classList = "fff";
 
+// const audio = new Audio("../audio/PIU.mp3");
+
+
 let bullet = [];
-let shoot = false;
 let isShooting = false;
 
 const control = {
@@ -76,11 +78,7 @@ window.addEventListener("keydown", (e) => {
   }
 });
 
-
-cvs.addEventListener("mousedown", (e) => {
-  isShooting = true;
-  console.log(isShooting);
-
+const shot = (e) => {
   const bullet1 = new Bullet({
     position: {
       x: player.position.x,
@@ -98,10 +96,18 @@ cvs.addEventListener("mousedown", (e) => {
     bullet.shift();
   }, 1000);
 
-  
+  // if (isShooting) shot(e);
+};
+
+cvs.addEventListener("mousedown", (e) => {
+  const audio = new Audio("../audio/piu3.mp3");
+  isShooting = true;
+  console.log(isShooting);
+  audio.play();
+  shot(e);
 });
 
-cvs.addEventListener("mouseup", (e) => {
+cvs.addEventListener("mouseup", () => {
   isShooting = false;
   console.log(isShooting);
 });
