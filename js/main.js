@@ -78,8 +78,8 @@ window.addEventListener("keydown", (e) => {
 const shot = (e) => {
   const bullet1 = new Bullet({
     position: {
-      x: player.position.x,
-      y: player.position.y,
+      x: player.position.x + 12,
+      y: player.position.y + 12,
     },
     sprite: bulletSprite,
     speed: 20,
@@ -101,6 +101,7 @@ cvs.addEventListener("mousedown", (e) => {
   isShooting = true;
   console.log(isShooting);
   audio.play();
+  audio.volume = 0.1
   shot(e);
 });
 
